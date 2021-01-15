@@ -63,7 +63,6 @@ const app = express();
 const ejs = require("ejs");
 const session = require("express-session");
 const indexjs = require("./index.js");
-const { query } = require("express");
 
 // Load the website.
 
