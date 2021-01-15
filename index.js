@@ -63,6 +63,7 @@ const app = express();
 const ejs = require("ejs");
 const session = require("express-session");
 const indexjs = require("./index.js");
+const { query } = require("express");
 
 // Load the website.
 
@@ -89,7 +90,13 @@ app.use(function(req, res, next) {
   if (manager[req._parsedUrl.pathname]) {
     if (cache == true) {
       setTimeout(async () => {
-        res.redirect(req.originalUrl);
+        let allqueries = Object.entries(req.query);
+        let querystring = "";
+        for (let query of allqueries) {
+          querystring = querystring + "&" + query[0] + "=" + query[1];
+        }
+        querystring = "?" + querystring.slice(1);
+        res.redirect((req._parsedUrl.pathname.slice(0, 1) == "/" ? req._parsedUrl.pathname : "/" + req._parsedUrl.pathname) + querystring);
       }, 1000);
       return;
     } else {
