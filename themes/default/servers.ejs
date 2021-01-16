@@ -30,7 +30,7 @@
             <% for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) { %>
                 <div style="margin-left: 5%; width: 80%; height: 150px;">
                     <h2 style="float: left; margin-top: 38px; margin-left: 2%;">
-                        <%= pterodactyl.relationships.servers.data[i].attributes.name.length > 15 ? pterodactyl.relationships.servers.data[i].attributes.name.slice(0, 12) + "..." : pterodactyl.relationships.servers.data[i].attributes.name %>
+                        <%= pterodactyl.relationships.servers.data[i].attributes.name.length > 10 ? pterodactyl.relationships.servers.data[i].attributes.name.slice(0, 7) + "..." : pterodactyl.relationships.servers.data[i].attributes.name %>
                     </h2>
                     <span style="float: right; margin-top: <% if (settings.api.client.allow.renewsuspendsystem.enabled) { %>17<% } else { %>38<% } %>px; margin-right: 2%; width: 15%;">
                         <% if (settings.api.client.allow.renewsuspendsystem.enabled) { %>

@@ -70,7 +70,7 @@ module.exports.load = async function(app, db) {
 
         let name = decodeURIComponent(req.query.name);
         if (name.length < 1) return res.redirect(`${redirectlink}?err=LITTLESERVERNAME`);
-        if (name.length > 255) return res.redirect(`${redirectlink}?err=BIGSERVERNAME`);
+        if (name.length > 191) return res.redirect(`${redirectlink}?err=BIGSERVERNAME`);
   
         let location = req.query.location;
 
