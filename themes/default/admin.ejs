@@ -80,7 +80,7 @@
         </select></p>
         <center><button onclick="submitForm()" class="button">Change</button></center>
         <form style="margin-left: 5%;" action="/setresources">
-            <h4>Change someone's extra resources.</h4>
+            <h4>Set someone's extra resources.</h4>
             <label for="id">Discord User ID:</label>
             <input name="id"><br><br>
             <label for="ram">RAM:</label>
@@ -91,7 +91,23 @@
             <input name="cpu" type="number"><br><br>
             <label for="servers">Servers:</label>
             <input name="servers" type="number"><br><br>
-            <center><button type="submit" class="button">Change</button></center>
+            <center><button type="submit" class="button">Set</button></center>
+        </form>
+
+        <br><br>
+        <form style="margin-left: 5%;" action="/addresources">
+            <h4>Add to someone's extra resources.</h4>
+            <label for="id">Discord User ID:</label>
+            <input name="id"><br><br>
+            <label for="ram">RAM:</label>
+            <input name="ram" type="number"><br><br>
+            <label for="disk">Disk:</label>
+            <input name="disk" type="number"><br><br>
+            <label for="cpu">CPU:</label>
+            <input name="cpu" type="number"><br><br>
+            <label for="servers">Servers:</label>
+            <input name="servers" type="number"><br><br>
+            <center><button type="submit" class="button">Add resources</button></center>
         </form>
         <br><br><br><br>
         <script>
