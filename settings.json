@@ -144,9 +144,24 @@
       },
       "coins": {
         "enabled": true,
-      },
-      "coins": {
-        "enabled": true
+        "shop": {
+          "ram": {
+            "cost": 0,
+            "per": 0
+          },
+          "disk": {
+            "cost": 0,
+            "per": 0
+          },
+          "cpu": {
+            "cost": 0,
+            "per": 0
+          },
+          "servers": {
+            "cost": 0,
+            "per": 0
+          }
+        }
       }
     },
     "arcio": {
