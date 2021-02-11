@@ -146,6 +146,7 @@
         "enabled": true,
         "store": {
           "_note": "The cost and per is not intended to used with 0.",
+          "enabled": true,
           "ram": {
             "cost": 0,
             "per": 0
