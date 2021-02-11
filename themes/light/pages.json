@@ -18,7 +18,9 @@
         "regenpassword": "/dashboard",
         "setresources": "/admin",
         "failedsetresources": "/admin",
-        "renewserver": "/servers"
+        "renewserver": "/servers",
+        "setcoins": "/admin",
+        "failedsetcoins": "/admin"
     },
     "pages": {
         "dashboard": "dashboard.ejs",
