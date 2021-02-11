@@ -144,7 +144,7 @@
       },
       "coins": {
         "enabled": true,
-        "shop": {
+        "store": {
           "ram": {
             "cost": 0,
             "per": 0
