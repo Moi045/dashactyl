@@ -43,7 +43,11 @@ module.exports.load = async function(app, db) {
 
         if (coins < 0 || coins > 999999999999999) return res.redirect(`${failredirect}?err=COINSIZE`);
 
-        await db.set("coins-" + id, coins);
+        if (coins == 0) {
+            await db.delete("coins-" + id)
+        } else {
+            await db.set("coins-" + id, coins);
+        }
 
         let successredirect = theme.settings.redirect.setcoins ? theme.settings.redirect.setcoins : "/";
         res.redirect(successredirect + "?err=none");
