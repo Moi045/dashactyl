@@ -21,7 +21,15 @@
         "failedsetresources": "/admin",
         "renewserver": "/servers",
         "setcoins": "/admin",
-        "failedsetcoins": "/admin"
+        "failedsetcoins": "/admin",
+        "purchaseram": "/store",
+        "failedpurchaseram": "/store",
+        "purchasedisk": "/store",
+        "failedpurchasedisk": "/store",
+        "purchasecpu": "/store",
+        "failedpurchasecpu": "/store",
+        "purchaseservers": "/store",
+        "failedpurchaseservers": "/store"
     },
     "pages": {
         "dashboard": "dashboard.ejs",
