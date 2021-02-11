@@ -1,5 +1,5 @@
 {
-  "version": "0.2.12",
+  "version": "0.2.13-beta",
   "defaulttheme": "default",
   "website": {
     "port": 80,
@@ -141,6 +141,9 @@
             }
           }
         }
+      },
+      "coins": {
+        "enabled": true,
       }
     },
     "arcio": {
