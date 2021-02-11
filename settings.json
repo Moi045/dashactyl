@@ -141,9 +141,6 @@
             }
           }
         }
-      },
-      "coins": {
-        "enabled": true
       }
     },
     "arcio": {
