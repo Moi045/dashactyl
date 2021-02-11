@@ -36,6 +36,13 @@ module.exports.load = async function(app, db) {
     
     let packagename = await db.get("package-" + req.query.id);
     let package = newsettings.api.client.packages.list[packagename ? packagename : newsettings.api.client.packages.default];
+    if (!package) package = {
+      ram: 0,
+      disk: 0,
+      cpu: 0,
+      servers: 0
+    };
+
     package["name"] = packagename;
 
     let pterodactylid = await db.get("users-" + req.query.id);
@@ -52,7 +59,7 @@ module.exports.load = async function(app, db) {
         console.log("- Pterodactyl Panel ID: " + pterodactylid);
         return res.send({ status: "could not find user on panel" });
     }
-    let userinfo = JSON.parse(await userinforeq.text());
+    let userinfo = await userinforeq.json();
 
     res.send({
       status: "success",
@@ -63,7 +70,8 @@ module.exports.load = async function(app, db) {
         cpu: 0,
         servers: 0
       },
-      userinfo: userinfo
+      userinfo: userinfo,
+      coins: newsettings.api.client.coins.enabled == true ? (await db.get("coins-" + req.query.id) ? await db.get("coins-" + req.query.id) : 0) : null
     });
   });
 
@@ -159,7 +167,7 @@ module.exports.load = async function(app, db) {
     } else {
       res.send({status: "missing variables"});
     }
-  });
+  });  
 
   async function check(req, res) {
     let settings = JSON.parse(fs.readFileSync("./settings.json").toString());
