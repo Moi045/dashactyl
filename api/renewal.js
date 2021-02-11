@@ -29,7 +29,7 @@ module.exports.load = async function(app, db) {
         }, 1000);
 
         app.get("/renew", async (req, res) => {
-            if (!req.session.pterodactyl) return res.send("Not logged in.");
+            if (!req.session.pterodactyl) return res.redirect("/login");
         
             if (!req.query.id) return res.send("Missing id.");
             if (!req.session.pterodactyl.relationships.servers.data.filter(server => server.attributes.id == req.query.id)) return res.send("Could not find server with that ID.");

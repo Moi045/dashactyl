@@ -10,7 +10,7 @@ module.exports.load = async function(app, db) {
   });
 
   app.get("/regen", async (req, res) => {
-    if (!req.session.pterodactyl) return res.send("Not logged in.");
+    if (!req.session.pterodactyl) return res.redirect("/login");
     
     let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
 
