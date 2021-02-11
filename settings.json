@@ -148,20 +148,20 @@
           "_note": "The cost and per is not intended to used with 0. This is not intended to sell resources for coins. Make sure coins are enabled too, or else there can be errors.",
           "enabled": true,
           "ram": {
-            "cost": 0,
-            "per": 0
+            "cost": 1,
+            "per": 1
           },
           "disk": {
-            "cost": 0,
-            "per": 0
+            "cost": 1,
+            "per": 1
           },
           "cpu": {
-            "cost": 0,
-            "per": 0
+            "cost": 1,
+            "per": 1
           },
           "servers": {
-            "cost": 0,
-            "per": 0
+            "cost": 1,
+            "per": 1
           }
         }
       }
