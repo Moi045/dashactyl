@@ -20,8 +20,12 @@
         </ul>
         <button style="margin-left: 5%; margin-top: 50px;" class="button" onclick="window.location.href = '/dashboard'">Back</button>
         <h2 style="margin-left: 5%;">Servers</h2>
-        <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/servers/new'">Create a new server.</button>
-        <button class="button" style="width: 40%;" onclick="window.location.href='/updateinfo?redirect=servers'">Update your server list.</button>
+        <% if (settings.api.client.allow.server.create == true) { %>
+            <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/servers/new'">Create a new server.</button>
+            <button class="button" style="width: 40%;" onclick="window.location.href='/updateinfo?redirect=servers'">Update your server list.</button>
+        <% } else { %>
+            <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.href='/updateinfo?redirect=servers'">Update your server list.</button>
+        <% } %>
         <br><br>
         <h3 style="margin-left: 5%;">Server List</h3>
         <% if (pterodactyl.relationships.servers.data.length == 0) { %>
@@ -36,8 +40,12 @@
                         <% if (settings.api.client.allow.renewsuspendsystem.enabled) { %>
                             <button class="button" style="background-color: #39dd47; width: 100%" onclick="window.location.href='/renew?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'">Renew</button>
                         <% } %>
-                        <button class="button" style="background-color: #606D7B; width: 100%" onclick="window.location.href='/servers/edit?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'"><i class="fa fa-gear" style="color:white;"></i></button>
-                        <button class="button" style="background-color: #dd4c39; width: 100%" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'"><i class="fa fa-close" style="color:white;"></i></button>
+                        <% if (settings.api.client.allow.server.modify == true) { %>
+                            <button class="button" style="background-color: #606D7B; width: 100%" onclick="window.location.href='/servers/edit?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'"><i class="fa fa-gear" style="color:white;"></i></button>
+                        <% } %>
+                        <% if (settings.api.client.allow.server.delete == true) { %>
+                            <button class="button" style="background-color: #dd4c39; width: 100%" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'"><i class="fa fa-close" style="color:white;"></i></button>
+                        <% } %>
                     </span>
                     <span style="float: right; margin-top: 38px; margin-right: 2%; width: 20%;">
                         <h3 style="margin: 0px; color: #b3b3b3;">Disk</h3>
