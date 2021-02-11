@@ -28,13 +28,15 @@
         "servers": "servers.ejs",
         "servers/new": "create.ejs",
         "servers/edit": "edit.ejs",
-        "admin": "admin.ejs"
+        "admin": "admin.ejs",
+        "store": "store.ejs"
     },
     "mustbeloggedin": [
         "/dashboard",
         "/servers",
         "/servers/new",
-        "/servers/edit"
+        "/servers/edit",
+        "/store"
     ],
     "mustbeadmin": [
         "/admin"
