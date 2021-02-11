@@ -85,7 +85,9 @@ module.exports.load = async function(app, db) {
     let id = req.body.id;
     let coins = req.body.coins;
 
-    if (typeof id !== "string") return res.send({status: "invalid id"})
+    if (typeof id !== "string") return res.send({status: "id must be a string"});
+    if (!(await db.get("users-" + id))) return res.redirect({status: "invalid id"});
+
     if (typeof coins !== "number") return res.send({status: "coins must be number"});
 
     if (coins < 0 || coins > 999999999999999) return res.redirect({status: "too small or big coins"});

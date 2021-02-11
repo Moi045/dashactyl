@@ -34,12 +34,14 @@ module.exports.load = async function(app, db) {
         let id = req.query.id;
         let coins = req.query.coins;
 
-        if (!id) return res.send(failredirect + "?err=MISSINGID")
-        if (!coins) return res.send(failredirect + "?err=MISSINGCOINS");
+        if (!id) return res.redirect(failredirect + "?err=MISSINGID");
+        if (!(await db.get("users-" + req.query.id))) return res.redirect(`${failredirect}?err=INVALIDID`);
+        
+        if (!coins) return res.redirect(failredirect + "?err=MISSINGCOINS");
 
         coins = parseFloat(coins);
 
-        if (isNaN(coins)) return res.send(failredirect + "?err=INVALIDCOINNUMBER");
+        if (isNaN(coins)) return res.redirect(failredirect + "?err=INVALIDCOINNUMBER");
 
         if (coins < 0 || coins > 999999999999999) return res.redirect(`${failredirect}?err=COINSIZE`);
 

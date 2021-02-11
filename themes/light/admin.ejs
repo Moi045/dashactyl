@@ -28,7 +28,7 @@
                         <span class="closebtn">&times;</span>
                         <% if (req.query.err == "MISSINGID") { %>
                             You have not provided the Discord user ID.
-                        <% } else if (req.query.err == "INVALIDID") { %>
+                        <% } else if (req.query.err == "INVALIDID" || req.query.err == "MISSINGID") { %>
                             You have provided a Discord user ID that does not exist, or has not signed up on the dashboard.
                         <% } else if (req.query.err == "MISSINGVARIABLES") { %>
                             You have not provided either ram, disk, cpu, and/or servers.
@@ -102,6 +102,7 @@
             <center><button type="submit" class="button">Change</button></center>
         </form>
 
+        <h4 style="margin-left: 5%;">Set coins.</h4>
         <form style="margin-left: 5%;" action="/setcoins">
             <label for="id">Discord User ID:</label>
             <input name="id"><br><br>
