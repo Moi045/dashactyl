@@ -3,6 +3,7 @@
     "notfound": "404.ejs",
     "redirect": {
         "callback": "/dashboard",
+        "failedcallback": "/",
         "logout": "/",
         "deleteserver": "/servers",
         "updateservers": "/dashboard",

@@ -19,6 +19,50 @@
             </li>
         </ul>
         <center style="margin-top: 50px;">
+            <% if (req.query.err) { %>
+                <div class="alert">
+                    <span class="closebtn">&times;</span>
+                    <% if (req.query.err == "MISSINGCODE") { %>
+                        Missing code.
+                    <% } else if (req.query.err == "MISSINGSCOPES") { %>
+                        Missing scopes.
+                    <% } else if (req.query.err == "IPBLOCKED") { %>
+                        You could not sign in, because your IP has been blocked from signing in.
+                    <% } else if (req.query.err == "ANTIALT") { %>
+                        It has been detected that you may be using an alt account.
+                    <% } else if (req.query.err == "ANOTHERACCOUNT") { %>
+                        We have detected an account with your Discord email on it but the user id has already been claimed on another Discord account.
+                    <% } else if (req.query.err == "UNKNOWN") { %>
+                        An error has occured when attempting to create your account.
+                    <% } else if (req.query.err == "DISABLED") { %>
+                        New users cannot signup currently.
+                    <% } else if (req.query.err == "CANNOTGETINFO") { %>
+                        An error has occured while attempting to get your user information.
+                    <% } else if (req.query.err == "UNVERIFIED") { %>
+                        Not verified a Discord account.
+                    <% } else if (req.query.err == "INVALIDCODE") { %>
+                        Invalid code.
+                    <% } else { %>
+                        I won't mind to add a little easter egg here. :)
+                    <% } %>
+                </div>
+                <script>
+                    let close = document.getElementsByClassName("closebtn");
+                    let i;
+    
+                    for (i = 0; i < close.length; i++) {
+                        close[i].onclick = function() {
+                            var div = this.parentElement;
+                            div.style.opacity = "0";
+                            setTimeout(
+                                function () {
+                                    div.style.display = "none";
+                                },
+                            600);
+                        }
+                    }
+                </script>
+            <% } %>
             <h1><%= extra.home.topmsg %></h1>
             <h3><%= extra.home.bottommsg %></h3>
             <br><br>
@@ -28,7 +72,6 @@
         <% if (extra.footerad == true) { %>
             <footer>
                 <p style="padding: 10px;">
-                    
                     Dashactyl - Developed by Sirv Development.
                 </p>
             </footer>
