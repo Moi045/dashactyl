@@ -144,6 +144,9 @@
       },
       "coins": {
         "enabled": true,
+      },
+      "coins": {
+        "enabled": true
       }
     },
     "arcio": {
