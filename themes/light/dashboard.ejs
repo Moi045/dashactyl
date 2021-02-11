@@ -63,7 +63,9 @@
             <h4 style="margin-left: 5%;">Username</h4>
             <input value="<%= pterodactyl.username %>" style="margin-left: 5%;" disabled>
             <br><br><br>
-            <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.replace('/regen');">Regenerate your password.</button><br><br>
+            <% if (settings.api.client.allow.regen == true) { %>
+                <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.replace('/regen');">Regenerate your password.</button><br><br>
+            <% } %>
             <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.replace('/updateinfo');">Update your account information.</button>
             <br><br><br><br>
         </div>
