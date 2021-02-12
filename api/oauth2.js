@@ -165,7 +165,7 @@ module.exports.load = async function(app, db) {
               req.session.password = genpassword;
             } else {
               let accountlistjson = await fetch(
-                settings.pterodactyl.domain + "/api/application/users?include=servers",
+                settings.pterodactyl.domain + "/api/application/users?include=servers&filter[email]=" + userinfo.email,
                 {
                   method: "get",
                   headers: {
@@ -174,7 +174,7 @@ module.exports.load = async function(app, db) {
                   }
                 }
               );
-              let accountlist = JSON.parse(await accountlistjson.text());
+              let accountlist = await accountlistjson.json();
               let user = accountlist.data.filter(acc => acc.attributes.email == userinfo.email);
               if (user.length == 1) {
                 let userid = user[0].attributes.id;

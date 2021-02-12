@@ -71,7 +71,12 @@
         </div>
         <h2 style="margin-left: 5%;">Plan</h2>
         <% if (typeof coins == "number") { %>
-            <p style="margin-left: 5%; color: rgb(129, 129, 129);">You have <%= coins %> coin<%= coins == 1 ? "" : "s" %>.</p>
+            <p style="margin-left: 5%; color: rgb(129, 129, 129);">
+                You have <%= coins %> coin<%= coins == 1 ? "" : "s" %>.
+                <% if (settings.api.client.coins.store.enabled == true) { %>
+                    <button class="button" onclick="window.location.href='/store'">Buy resources.</button>
+                <% } %>
+            </p>
         <% } %>
         <% if (pterodactyl.root_admin == true) { %>
             <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/servers'">View your servers.</button>

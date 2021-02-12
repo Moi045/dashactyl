@@ -20,7 +20,34 @@
         </ul>
         <% if (settings.api.client.coins.store.enabled == true) { %>
             <center style="margin-top: 50px;">
+                <button class="button" onclick="window.location.href = '/dashboard'">Back</button>
                 <h1>Store</h1>
+                <p style="color: rgb(172, 172, 172);">You have <%= coins %> coin<%= coins == 1 ? "" : "s" %>.</p>
+
+                <% if (req.query.err) { %>
+                    <% if (req.query.err == "CANNOTAFFORD") { %>
+                        <div class="alert" style="margin-left: -2%;">
+                            <span class="closebtn">&times;</span>
+                            Insufficient funds.
+                        </div>
+                        <script>
+                            let close = document.getElementsByClassName("closebtn");
+                            let i;
+            
+                            for (i = 0; i < close.length; i++) {
+                                close[i].onclick = function() {
+                                    var div = this.parentElement;
+                                    div.style.opacity = "0";
+                                    setTimeout(
+                                        function () {
+                                            div.style.display = "none";
+                                        },
+                                    600);
+                                }
+                            }
+                        </script>
+                    <% } %>
+                <% } %>
     
                 <h2>RAM</h2>
                 <p><%= settings.api.client.coins.store.ram.per %> RAM per <%= settings.api.client.coins.store.ram.cost %> coin<%= settings.api.client.coins.store.ram.cost == 1 ? "" : "s" %>.</p>
