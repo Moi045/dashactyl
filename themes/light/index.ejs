@@ -19,7 +19,7 @@
             </li>
         </ul>
         <center style="margin-top: 50px;">
-            <% if (req.query.err) { %>
+            <% if (req.query.err && !userinfo) { %>
                 <div class="alert">
                     <span class="closebtn">&times;</span>
                     <% if (req.query.err == "MISSINGCODE") { %>
