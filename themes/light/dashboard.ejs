@@ -54,6 +54,23 @@
                   }
                 }
             </script>
+        <% } else if (req.query.err && req.query.err == "arcio") { %>
+            <div class="alert">
+                <span class="closebtn">&times;</span>
+                You either opted out of arc.io, or are already on the afk page on another tab, therefore you were kicked out of the afk page.
+            </div>
+            <script>
+                let close = document.getElementsByClassName("closebtn");
+                let i;
+                
+                for (i = 0; i < close.length; i++) {
+                  close[i].onclick = function(){
+                    let div = this.parentElement;
+                    div.style.opacity = "0";
+                    setTimeout(function(){ div.style.display = "none"; }, 600);
+                  }
+                }
+            </script>
         <% } %>
         <h4 style="margin-left: 5%;">Panel Link: <a href="/panel" style="color: #9DBCDA"><%= settings.pterodactyl.domain %></a></h4>
         <div style="margin-left: 5%; margin-top: 10px; width: 80%; margin-bottom: 10px">
@@ -75,6 +92,9 @@
                 You have <%= coins %> coin<%= coins == 1 ? "" : "s" %>.
                 <% if (settings.api.client.coins.store.enabled == true) { %>
                     <button class="button" onclick="window.location.href='/store'">Buy resources.</button>
+                <% } %>
+                <% if (settings.api.arcio["afk page"].enabled == true) { %>
+                    <button class="button" onclick="window.location.href='/arcio'">Arc.IO AFK Page</button>
                 <% } %>
             </p>
         <% } %>
