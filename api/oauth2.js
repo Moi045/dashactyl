@@ -165,7 +165,7 @@ module.exports.load = async function(app, db) {
               req.session.password = genpassword;
             } else {
               let accountlistjson = await fetch(
-                settings.pterodactyl.domain + "/api/application/users?include=servers&filter[email]=" + userinfo.email,
+                settings.pterodactyl.domain + "/api/application/users?include=servers&filter[email]=" + encodeURIComponent(userinfo.email),
                 {
                   method: "get",
                   headers: {
