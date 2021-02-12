@@ -11,7 +11,7 @@ if (settings.pterodactyl) if (settings.pterodactyl.domain) {
 
 module.exports.load = async function(app, db) {
   app.get("/updateinfo", async (req, res) => {
-    if (!req.session.pterodactyl) return res.send("Not logged in.")
+    if (!req.session.pterodactyl) return res.redirect("/login")
     let cacheaccount = await fetch(
       settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + req.session.userinfo.id)) + "?include=servers",
       {
@@ -28,7 +28,7 @@ module.exports.load = async function(app, db) {
   });
 
   app.get("/create", async (req, res) => {
-    if (!req.session.pterodactyl) return res.send("Not logged in.");
+    if (!req.session.pterodactyl) return res.redirect("/login");
     
     let theme = indexjs.get(req);
 
@@ -150,7 +150,7 @@ module.exports.load = async function(app, db) {
   });
 
   app.get("/modify", async (req, res) => {
-    if (!req.session.pterodactyl) return res.send("Not logged in.");
+    if (!req.session.pterodactyl) return res.redirect("/login");
 
     let theme = indexjs.get(req);
 
@@ -254,7 +254,7 @@ module.exports.load = async function(app, db) {
   });
 
   app.get("/delete", async (req, res) => {
-    if (!req.session.pterodactyl) return res.send("Not logged in.")
+    if (!req.session.pterodactyl) return res.redirect("/login")
 
     if (!req.query.id) return res.send("Missing id.");
 

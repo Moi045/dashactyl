@@ -32,9 +32,11 @@ module.exports.load = async function(app, db) {
   });
 
   app.get(settings.api.client.oauth2.callbackpath, async (req, res) => {
+    let theme = indexjs.get(req);
     let customredirect = req.session.redirect;
     delete req.session.redirect;
-    if (!req.query.code) return res.send("Missing code.")
+    let failedcallback = theme.settings.redirect.failedcallback ? theme.settings.redirect.failedcallback : "/";
+    if (!req.query.code) return res.redirect(failedcallback + "?err=MISSINGCODE");
     let json = await fetch(
       'https://discord.com/api/oauth2/token',
       {
@@ -52,7 +54,7 @@ module.exports.load = async function(app, db) {
       if (scopes.replace(/identify/g, "") == scopes) missingscopes.push("identify");
       if (scopes.replace(/email/g, "") == scopes) missingscopes.push("email");
       if (newsettings.api.client.bot.joinguild.enabled == true) if (scopes.replace(/guilds.join/g, "") == scopes) missingscopes.push("guilds.join");
-      if (missingscopes.length !== 0) return res.send("Missing scopes: " + missingscopes.join(", "));
+      if (missingscopes.length !== 0) return res.redirect(failedcallback + "?err=MISSINGSCOPES&scopes=" + missingscopes.join("%20"));
       let userjson = await fetch(
         'https://discord.com/api/users/@me',
         {
@@ -65,9 +67,10 @@ module.exports.load = async function(app, db) {
       let userinfo = JSON.parse(await userjson.text());
       if (userinfo.verified == true) {
         
-        let ip = (newsettings.api.client.oauth2.ip["trust x-forwarded-for"] == true ? (req.headers['x-forwarded-for'] || req.connection.remoteAddress) : req.connection.remoteAddress).replace(/::1/g, "::ffff:127.0.0.1").replace(/^.*:/, '');
+        let ip = (newsettings.api.client.oauth2.ip["trust x-forwarded-for"] == true ? (req.headers['x-forwarded-for'] || req.connection.remoteAddress) : req.connection.remoteAddress);
+        ip = (ip ? ip : "::1").replace(/::1/g, "::ffff:127.0.0.1").replace(/^.*:/, '');
         
-        if (newsettings.api.client.oauth2.ip.block.includes(ip)) return res.send("You could not sign in, because your IP has been blocked from signing in.")
+        if (newsettings.api.client.oauth2.ip.block.includes(ip)) return res.redirect(failedcallback + "?err=IPBLOCKED")
 
         if (newsettings.api.client.oauth2.ip["duplicate check"] == true) {
           let allips = await db.get("ips") ? await db.get("ips") : [];
@@ -76,7 +79,7 @@ module.exports.load = async function(app, db) {
             if (mainip !== ip) {
               allips = allips.filter(ip2 => ip2 !== mainip);
               if (allips.includes(ip)) {
-                return res.send("It has been detected that you may be using an alt account.")
+                return res.redirect(failedcallback + "?err=ANTIALT")
               }
               allips.push(ip);
               await db.set("ips", allips);
@@ -84,7 +87,7 @@ module.exports.load = async function(app, db) {
             }
           } else {
             if (allips.includes(ip)) {
-              return res.send("It has been detected that you may be using an alt account.")
+              return res.redirect(failedcallback + "?err=ANTIALT")
             }
             allips.push(ip);
             await db.set("ips", allips);
@@ -125,10 +128,10 @@ module.exports.load = async function(app, db) {
                 );  
               }
             } else {
-              return res.send("api.client.bot.joinguild.guildid is not an array nor a string.");
+              return res.send("Tell an administrator there is an error settings.json: api.client.bot.joinguild.guildid is not an array nor a string.");
             }
           } else {
-            return res.send("api.client.bot.joinguild.guildid is not an array nor a string.");
+            return res.send("Tell an administrator there is an error settings.json: api.client.bot.joinguild.guildid is not an array nor a string.");
           }
         }
         if (!await db.get("users-" + userinfo.id)) {
@@ -162,7 +165,7 @@ module.exports.load = async function(app, db) {
               req.session.password = genpassword;
             } else {
               let accountlistjson = await fetch(
-                settings.pterodactyl.domain + "/api/application/users?include=servers",
+                settings.pterodactyl.domain + "/api/application/users?include=servers&filter[email]=" + userinfo.email,
                 {
                   method: "get",
                   headers: {
@@ -171,7 +174,7 @@ module.exports.load = async function(app, db) {
                   }
                 }
               );
-              let accountlist = JSON.parse(await accountlistjson.text());
+              let accountlist = await accountlistjson.json();
               let user = accountlist.data.filter(acc => acc.attributes.email == userinfo.email);
               if (user.length == 1) {
                 let userid = user[0].attributes.id;
@@ -182,14 +185,14 @@ module.exports.load = async function(app, db) {
                   await db.set("users-" + userinfo.id, userid);
                   req.session.pterodactyl = user[0].attributes;
                 } else {
-                  return res.send("We have detected an account with your Discord email on it but the user id has already been claimed on another Discord account.");
+                  return res.redirect(failedcallback + "?err=ANOTHERACCOUNT");
                 }
               } else {
-                return res.send("An error has occured when attempting to create your account.");
+                return res.redirect(failedcallback + "?err=UNKNOWN");
               };
             };
           } else {
-            return res.send("New users cannot signup currently.")
+            return res.redirect(failedcallback + "?err=DISABLED")
           }
         };
 
@@ -200,18 +203,18 @@ module.exports.load = async function(app, db) {
             headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
           }
         );
-        if (await cacheaccount.statusText == "Not Found") return res.send("An error has occured while attempting to get your user information.");
+        if (await cacheaccount.statusText == "Not Found") return res.redirect(failedcallback + "?err=CANNOTGETINFO");
         let cacheaccountinfo = JSON.parse(await cacheaccount.text());
         req.session.pterodactyl = cacheaccountinfo.attributes;
 
         req.session.userinfo = userinfo;
-        let theme = indexjs.get(req);
+
         if (customredirect) return res.redirect(customredirect);
         return res.redirect(theme.settings.redirect.callback ? theme.settings.redirect.callback : "/");
       };
-      res.send("Not verified a Discord account.");
+      res.redirect(failedcallback + "?err=UNVERIFIED");
     } else {
-      res.send("Invalid code.");
+      res.redirect(failedcallback + "?err=INVALIDCODE");
     };
   });
 };

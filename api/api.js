@@ -36,6 +36,13 @@ module.exports.load = async function(app, db) {
     
     let packagename = await db.get("package-" + req.query.id);
     let package = newsettings.api.client.packages.list[packagename ? packagename : newsettings.api.client.packages.default];
+    if (!package) package = {
+      ram: 0,
+      disk: 0,
+      cpu: 0,
+      servers: 0
+    };
+
     package["name"] = packagename;
 
     let pterodactylid = await db.get("users-" + req.query.id);
@@ -52,7 +59,7 @@ module.exports.load = async function(app, db) {
         console.log("- Pterodactyl Panel ID: " + pterodactylid);
         return res.send({ status: "could not find user on panel" });
     }
-    let userinfo = JSON.parse(await userinforeq.text());
+    let userinfo = await userinforeq.json();
 
     res.send({
       status: "success",
@@ -63,15 +70,44 @@ module.exports.load = async function(app, db) {
         cpu: 0,
         servers: 0
       },
-      userinfo: userinfo
+      userinfo: userinfo,
+      coins: newsettings.api.client.coins.enabled == true ? (await db.get("coins-" + req.query.id) ? await db.get("coins-" + req.query.id) : 0) : null
     });
+  });
+
+  app.post("/api/setcoins", async (req, res) => {
+    let settings = await check(req, res);
+    if (!settings) return;
+
+    if (typeof req.body !== "object") return res.send({status: "body must be an object"});
+    if (Array.isArray(req.body)) return res.send({status: "body cannot be an array"});
+
+    let id = req.body.id;
+    let coins = req.body.coins;
+
+    if (typeof id !== "string") return res.send({status: "id must be a string"});
+
+    if (!(await db.get("users-" + id))) return res.send({status: "invalid id"});
+
+    if (typeof coins !== "number") return res.send({status: "coins must be number"});
+
+    if (coins < 0 || coins > 999999999999999) return res.send({status: "too small or big coins"});
+
+    if (coins == 0) {
+      await db.delete("coins-" + id)
+    } else {
+      await db.set("coins-" + id, coins);
+    }
+
+    res.send({status: "success"});
   });
 
   app.post("/api/setplan", async (req, res) => {
     let settings = await check(req, res);
     if (!settings) return;
 
-    if (!req.body) return res.send({status: "missing body"});
+    if (typeof req.body !== "object") return res.send({status: "body must be an object"});
+    if (Array.isArray(req.body)) return res.send({status: "body cannot be an array"});
 
     if (typeof req.body.id !== "string") return res.send({status: "missing id"});
 
@@ -94,7 +130,8 @@ module.exports.load = async function(app, db) {
     let settings = await check(req, res);
     if (!settings) return;
 
-    if (!req.body) return res.send({status: "missing body"});
+    if (typeof req.body !== "object") return res.send({status: "body must be an object"});
+    if (Array.isArray(req.body)) return res.send({status: "body cannot be an array"});
 
     if (typeof req.body.id !== "string") return res.send({status: "missing id"});
 
@@ -159,7 +196,7 @@ module.exports.load = async function(app, db) {
     } else {
       res.send({status: "missing variables"});
     }
-  });
+  });  
 
   async function check(req, res) {
     let settings = JSON.parse(fs.readFileSync("./settings.json").toString());

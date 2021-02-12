@@ -3,6 +3,7 @@
     "notfound": "404.ejs",
     "redirect": {
         "callback": "/dashboard",
+        "failedcallback": "/",
         "logout": "/",
         "deleteserver": "/servers",
         "updateservers": "/dashboard",
@@ -18,20 +19,32 @@
         "regenpassword": "/dashboard",
         "setresources": "/admin",
         "failedsetresources": "/admin",
-        "renewserver": "/servers"
+        "renewserver": "/servers",
+        "setcoins": "/admin",
+        "failedsetcoins": "/admin",
+        "purchaseram": "/store",
+        "failedpurchaseram": "/store",
+        "purchasedisk": "/store",
+        "failedpurchasedisk": "/store",
+        "purchasecpu": "/store",
+        "failedpurchasecpu": "/store",
+        "purchaseservers": "/store",
+        "failedpurchaseservers": "/store"
     },
     "pages": {
         "dashboard": "dashboard.ejs",
         "servers": "servers.ejs",
         "servers/new": "create.ejs",
         "servers/edit": "edit.ejs",
-        "admin": "admin.ejs"
+        "admin": "admin.ejs",
+        "store": "store.ejs"
     },
     "mustbeloggedin": [
         "/dashboard",
         "/servers",
         "/servers/new",
-        "/servers/edit"
+        "/servers/edit",
+        "/store"
     ],
     "mustbeadmin": [
         "/admin"

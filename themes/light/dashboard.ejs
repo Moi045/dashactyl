@@ -63,11 +63,21 @@
             <h4 style="margin-left: 5%;">Username</h4>
             <input value="<%= pterodactyl.username %>" style="margin-left: 5%;" disabled>
             <br><br><br>
-            <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.replace('/regen');">Regenerate your password.</button><br><br>
+            <% if (settings.api.client.allow.regen == true) { %>
+                <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.replace('/regen');">Regenerate your password.</button><br><br>
+            <% } %>
             <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.replace('/updateinfo');">Update your account information.</button>
             <br><br><br><br>
         </div>
         <h2 style="margin-left: 5%;">Plan</h2>
+        <% if (typeof coins == "number") { %>
+            <p style="margin-left: 5%; color: rgb(129, 129, 129);">
+                You have <%= coins %> coin<%= coins == 1 ? "" : "s" %>.
+                <% if (settings.api.client.coins.store.enabled == true) { %>
+                    <button class="button" onclick="window.location.href='/store'">Buy resources.</button>
+                <% } %>
+            </p>
+        <% } %>
         <% if (pterodactyl.root_admin == true) { %>
             <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/servers'">View your servers.</button>
             <button class="button" style="width: 40%;" onclick="window.location.href = '/admin';">Administrator Settings</button>
@@ -123,7 +133,6 @@
         <% if (extra.footerad == true) { %>
             <footer>
                 <p style="padding: 10px;">
-                    
                     Dashactyl - Developed by Sirv Development.
                 </p>
             </footer>
