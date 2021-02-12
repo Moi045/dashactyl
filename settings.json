@@ -145,7 +145,7 @@
       "coins": {
         "enabled": false,
         "store": {
-          "_note": "The cost and per is not intended to used with 0. This is not intended to sell resources for coins. Make sure coins are enabled too, or else there can be errors.",
+          "_comment": "The cost and per is not intended to used with 0. This is not intended to sell resources for coins. Make sure coins are enabled too, or else there can be errors.",
           "enabled": false,
           "ram": {
             "cost": 1,
