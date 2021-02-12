@@ -29,7 +29,8 @@
         "purchasecpu": "/store",
         "failedpurchasecpu": "/store",
         "purchaseservers": "/store",
-        "failedpurchaseservers": "/store"
+        "failedpurchaseservers": "/store",
+        "arcioerror": "/dashboard?err=arcio"
     },
     "pages": {
         "dashboard": "dashboard.ejs",
@@ -37,14 +38,16 @@
         "servers/new": "create.ejs",
         "servers/edit": "edit.ejs",
         "admin": "admin.ejs",
-        "store": "store.ejs"
+        "store": "store.ejs",
+        "arcio": "arcio.ejs"
     },
     "mustbeloggedin": [
         "/dashboard",
         "/servers",
         "/servers/new",
         "/servers/edit",
-        "/store"
+        "/store",
+        "/arcio"
     ],
     "mustbeadmin": [
         "/admin"
@@ -88,6 +91,9 @@
         },
         "store": {
             "title": "Dashactyl - Store"
+        },
+        "arcio": {
+            "title": "Dashactyl - Arc.IO AFK Page"
         }
     }
 }
