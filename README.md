@@ -21,3 +21,9 @@ We are not responsible for any damages.
 I forgot to write that there's a separate license for the Arc.IO AFK obfused code.
 
 I will be providing it soon.
+
+As I wait for the code owner to give me the license, keep in mind to keep these terms:
+
+- Do not deobfuscate the code. Do not try it either.
+- Do not use the code for sites other than Dashactyl. Just because there's Dashactyl doesn't mean it "isn't" Dashactyl.
+- If asked by @Withdrawal#6969 (id: 365797140448018443) via Discord, you must remove the Arc.IO coin system.
