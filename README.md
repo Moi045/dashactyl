@@ -15,3 +15,9 @@ Check out the wiki! https://github.com/real2two/dashactyl/wiki
 # Disclaimer
 
 We are not responsible for any damages.
+
+# Arc.IO AFK Page Disclaimer
+
+I forgot to write that there's a separate license for the Arc.IO AFK obfused code.
+
+I will be providing it soon.
