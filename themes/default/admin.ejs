@@ -37,6 +37,8 @@
                         The RAM, disk, CPU and servers number cannot be less than 0 nor above 999999999999999.
                     <% } else if (req.query.err == "INVALIDCOINNUMBER") { %>
                         The coin amount must be a number.
+                    <% } else if (req.query.err == "COINSIZE") { %>
+                        The coin amount canno tbe less than 0 and must be above 999999999999999.
                     <% } else { %>
                         Stop admin abusing.
                     <% } %>
