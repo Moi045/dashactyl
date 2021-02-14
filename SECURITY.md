@@ -6,8 +6,8 @@ Currently, the following versions below are currently being supported with secur
 
 | Version | Supported          |
 | ------- | ------------------ |
-| > 0.3-theme   | :white_check_mark: |
-| < 0.3-theme   | :x:                |
+| > 0.3.2   | :white_check_mark: |
+| < 0.3.2   | :x:                |
 
 ## Reporting a Vulnerability
 
