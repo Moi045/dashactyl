@@ -14,7 +14,6 @@ if (settings.pterodactyl.domain.slice(-1) == "/")
 const fetch = require('node-fetch');
 
 const indexjs = require("../index.js");
-const arciotext = (require("./arcio.js")).text;
 
 const fs = require("fs");
 
@@ -166,7 +165,7 @@ module.exports.load = async function(app, db) {
               req.session.password = genpassword;
             } else {
               let accountlistjson = await fetch(
-                settings.pterodactyl.domain + "/api/application/users?include=servers&filter[email]=" + encodeURIComponent(userinfo.email),
+                settings.pterodactyl.domain + "/api/application/users?include=servers&filter[email]=" + userinfo.email,
                 {
                   method: "get",
                   headers: {

@@ -34,11 +34,11 @@
                     <% } else if (req.query.err == "MISSINGCOINS") { %>
                         You have not provided the coin amount.
                     <% } else if (req.query.err == "RAMSIZE" || req.query.err == "DISKSIZE" || req.query.err == "CPUSIZE" || req.query.err == "SERVERSIZE") { %>
-                        The RAM, disk, CPU and servers number cannot be less than 0 nor cannot be more than 999999999999999.
+                        The RAM, disk, CPU and servers number cannot be less than 0 and must be above 999999999999999.
                     <% } else if (req.query.err == "INVALIDCOINNUMBER") { %>
                         The coin amount must be a number.
                     <% } else if (req.query.err == "COINSIZE") { %>
-                        The coin amount cannot be less than 0 and nor cannot be more than 999999999999999.
+                        The coin amount canno tbe less than 0 and must be above 999999999999999.
                     <% } else { %>
                         Stop admin abusing.
                     <% } %>

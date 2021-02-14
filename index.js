@@ -5,7 +5,6 @@
 const fs = require("fs");
 const fetch = require('node-fetch');
 const chalk = require("chalk");
-const arciotext = (require("./api/arcio.js")).text;
 
 // Load settings.
 
@@ -23,8 +22,6 @@ const defaultthemesettings = {
 
 module.exports.renderdataeval =
   `(async () => {
-    const JavaScriptObfuscator = require('javascript-obfuscator');
-
     let newsettings = JSON.parse(require("fs").readFileSync("./settings.json"));
     let renderdata = {
       req: req,
@@ -41,14 +38,7 @@ module.exports.renderdataeval =
       coins: newsettings.api.client.coins.enabled == true ? (req.session.userinfo ? (await db.get("coins-" + req.session.userinfo.id) ? await db.get("coins-" + req.session.userinfo.id) : 0) : null) : null,
       pterodactyl: req.session.pterodactyl,
       theme: theme.name,
-      extra: theme.settings.variables,
-      arcioafktext: JavaScriptObfuscator.obfuscate(\`
-        let everywhat = \${newsettings.api.arcio["afk page"].every};
-        let gaincoins = \${newsettings.api.arcio["afk page"].coins};
-        let arciopath = "\${newsettings.api.arcio["afk page"].path.replace(/\\\\/g, "\\\\\\\\").replace(/"/g, "\\\\\\"")}";
-
-        \${arciotext}
-      \`)
+      extra: theme.settings.variables
     };
     return renderdata;
   })();`;
@@ -68,7 +58,6 @@ module.exports.db = db;
 
 const express = require("express");
 const app = express();
-const expressWs = require('express-ws')(app);
 
 // Load express addons.
 
