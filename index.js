@@ -84,11 +84,22 @@ const listener = app.listen(settings.website.port, function() {
   console.log(chalk.green("[WEBSITE] The dashboard has successfully loaded on port " + listener.address().port + "."));
 });
 
-var cache = false;
+let ipratelimit = {};
+
+var cache = 0;
+
+setInterval(
+  async function() {
+    if (cache - .1 < 0) return cache = 0;
+    cache = cache - .1;
+  }, 100
+)
+
 app.use(function(req, res, next) {
-  let manager = (JSON.parse(fs.readFileSync("./settings.json").toString())).api.client.ratelimits;
+  let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
+  let manager = newsettings.api.client.ratelimits;
   if (manager[req._parsedUrl.pathname]) {
-    if (cache == true) {
+    if (cache > 0) {
       setTimeout(async () => {
         let allqueries = Object.entries(req.query);
         let querystring = "";
@@ -96,14 +107,29 @@ app.use(function(req, res, next) {
           querystring = querystring + "&" + query[0] + "=" + query[1];
         }
         querystring = "?" + querystring.slice(1);
+        if (querystring == "?") querystring = "";
         res.redirect((req._parsedUrl.pathname.slice(0, 1) == "/" ? req._parsedUrl.pathname : "/" + req._parsedUrl.pathname) + querystring);
       }, 1000);
       return;
     } else {
-      cache = true;
-      setTimeout(async () => {
-        cache = false;
-      }, 1000 * manager[req._parsedUrl.pathname]);
+      let ip = (newsettings.api.client.oauth2.ip["trust x-forwarded-for"] == true ? (req.headers['x-forwarded-for'] || req.connection.remoteAddress) : req.connection.remoteAddress);
+      ip = (ip ? ip : "::1").replace(/::1/g, "::ffff:127.0.0.1").replace(/^.*:/, '');
+    
+      if (ipratelimit[ip] && ipratelimit[ip] >= 30) {
+        res.send(`<html><head><title>You are being rate limited.</title></head><body>You have exceeded rate limits.</body></html>`);
+        return;
+      }
+    
+      ipratelimit[ip] = (ipratelimit[ip] ? ipratelimit[ip] : 0) + 1;
+    
+      setTimeout(
+        async function() {
+          ipratelimit[ip] = ipratelimit[ip] - 1;
+          if (ipratelimit[ip] <= 0) ipratelimit[ip] = 0;
+        }, 60000
+      )
+
+      cache = cache + manager[req._parsedUrl.pathname];
     }
   };
   next();
@@ -223,20 +249,11 @@ module.exports.get = function(req) {
 };
 
 module.exports.islimited = async function() {
-  return cache == true ? false : true;
+  return cache <= 0 ? true : false;
 }
 
 module.exports.ratelimits = async function(length) {
-  if (cache == true) return setTimeout(
-    indexjs.ratelimits
-    , 1
-  );
-  cache = true;
-  setTimeout(
-    async function() {
-      cache = false;
-    }, length * 1000
-  )
+  cache = cache + length
 }
 
 // Get a cookie.

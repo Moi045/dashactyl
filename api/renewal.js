@@ -14,7 +14,9 @@ module.exports.load = async function(app, db) {
                 renewalservers[id]--;
                 if (renewalservers[id] < 1) {
                     let canpass = await indexjs.islimited();
-                    if (canpass == false) return;
+                    if (canpass == false) {
+                        return renewalservers[id] = 0;
+                    };
                     indexjs.ratelimits(1);
                     await fetch(
                         settings.pterodactyl.domain + "/api/application/servers/" + id + "/suspend",
