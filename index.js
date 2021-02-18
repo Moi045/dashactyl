@@ -5,6 +5,7 @@
 const fs = require("fs");
 const fetch = require('node-fetch');
 const chalk = require("chalk");
+const arciotext = (require("./api/arcio.js")).text;
 
 // Load settings.
 
@@ -22,6 +23,8 @@ const defaultthemesettings = {
 
 module.exports.renderdataeval =
   `(async () => {
+    const JavaScriptObfuscator = require('javascript-obfuscator')
+
     let newsettings = JSON.parse(require("fs").readFileSync("./settings.json"));
     let renderdata = {
       req: req,
@@ -38,7 +41,13 @@ module.exports.renderdataeval =
       coins: newsettings.api.client.coins.enabled == true ? (req.session.userinfo ? (await db.get("coins-" + req.session.userinfo.id) ? await db.get("coins-" + req.session.userinfo.id) : 0) : null) : null,
       pterodactyl: req.session.pterodactyl,
       theme: theme.name,
-      extra: theme.settings.variables
+      extra: theme.settings.variables,
+      arcioafktext: JavaScriptObfuscator.obfuscate(\`
+        let everywhat = \${newsettings.api.arcio.earn.every};
+        let gaincoins = \${newsettings.api.arcio.earn.coins};
+        let arciopath = "\${newsettings.api.arcio.earn.path.replace(/\\\\/g, "\\\\\\\\").replace(/"/g, "\\\\\\"")}";
+        \${arciotext}
+      \`)
     };
     return renderdata;
   })();`;
@@ -61,6 +70,7 @@ const app = express();
 
 // Load express addons.
 
+const expressWs = require('express-ws')(app);
 const ejs = require("ejs");
 const session = require("express-session");
 const indexjs = require("./index.js");
@@ -96,8 +106,18 @@ setInterval(
 )
 
 app.use(function(req, res, next) {
-  let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
-  let manager = newsettings.api.client.ratelimits;
+  let manager = {
+    "/callback": 2,
+    "/create": 1,
+    "/delete": 1,
+    "/modify": 1,
+    "/updateinfo": 1,
+    "/setplan": 2,
+    "/admin": 1,
+    "/regen": 1,
+    "/renew": 1,
+    "/api/userinfo": 1
+  };
   if (manager[req._parsedUrl.pathname]) {
     if (cache > 0) {
       setTimeout(async () => {
@@ -112,22 +132,28 @@ app.use(function(req, res, next) {
       }, 1000);
       return;
     } else {
-      let ip = (newsettings.api.client.oauth2.ip["trust x-forwarded-for"] == true ? (req.headers['x-forwarded-for'] || req.connection.remoteAddress) : req.connection.remoteAddress);
-      ip = (ip ? ip : "::1").replace(/::1/g, "::ffff:127.0.0.1").replace(/^.*:/, '');
-    
-      if (ipratelimit[ip] && ipratelimit[ip] >= 30) {
-        res.send(`<html><head><title>You are being rate limited.</title></head><body>You have exceeded rate limits.</body></html>`);
-        return;
-      }
-    
-      ipratelimit[ip] = (ipratelimit[ip] ? ipratelimit[ip] : 0) + 1;
-    
-      setTimeout(
-        async function() {
-          ipratelimit[ip] = ipratelimit[ip] - 1;
-          if (ipratelimit[ip] <= 0) ipratelimit[ip] = 0;
-        }, 60000
-      )
+      let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
+
+      if (newsettings.api.client.ratelimits.enabled == true) {
+
+        let ip = (newsettings.api.client.ratelimits["trust x-forwarded-for"] == true ? (req.headers['x-forwarded-for'] || req.connection.remoteAddress) : req.connection.remoteAddress);
+        ip = (ip ? ip : "::1").replace(/::1/g, "::ffff:127.0.0.1").replace(/^.*:/, '');
+      
+        if (ipratelimit[ip] && ipratelimit[ip] >= newsettings.api.client.ratelimits.requests) {
+          res.send(`<html><head><title>You are being rate limited.</title></head><body>You have exceeded rate limits.</body></html>`);
+          return;
+        }
+      
+        ipratelimit[ip] = (ipratelimit[ip] ? ipratelimit[ip] : 0) + 1;
+      
+        setTimeout(
+          async function() {
+            ipratelimit[ip] = ipratelimit[ip] - 1;
+            if (ipratelimit[ip] <= 0) ipratelimit[ip] = 0;
+          }, newsettings.api.client.ratelimits["per second"] * 1000
+        );
+  
+      };
 
       cache = cache + manager[req._parsedUrl.pathname];
     }
