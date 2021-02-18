@@ -140,6 +140,7 @@ app.use(function(req, res, next) {
         ip = (ip ? ip : "::1").replace(/::1/g, "::ffff:127.0.0.1").replace(/^.*:/, '');
       
         if (ipratelimit[ip] && ipratelimit[ip] >= newsettings.api.client.ratelimits.requests) {
+          // possibly add a custom theme for this in the future
           res.send(`<html><head><title>You are being rate limited.</title></head><body>You have exceeded rate limits.</body></html>`);
           return;
         }
